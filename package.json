@@ -11,6 +11,7 @@
     "format:ci": "npx prettier . --check"
   },
   "dependencies": {
+    "@clerk/nextjs": "6.9.11",
     "next": "15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
