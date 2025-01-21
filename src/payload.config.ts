@@ -19,6 +19,14 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      logout: {
+        Button: {
+          path: "@/components/payload/elements/log-out-button#LogOutButton",
+        },
+      },
+      providers: ["@/providers/auth-provider#AuthProvider"],
+    },
   },
   collections: [Users, Media],
   editor: lexicalEditor(),
