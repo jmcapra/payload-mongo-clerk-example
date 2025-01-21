@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "npx prettier . --write",
-    "format:ci": "npx prettier . --check"
+    "format:ci": "npx prettier . --check",
+    "payload:generate:types": "npx payload generate:types"
   },
   "dependencies": {
     "@clerk/nextjs": "6.9.11",
