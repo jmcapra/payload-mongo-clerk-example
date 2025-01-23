@@ -7,8 +7,9 @@ import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
 
-import { Users } from "./collections/Users";
-import { Media } from "./collections/Media";
+import { Users } from "@/collections/Users";
+import { Media } from "@/collections/Media";
+import { Posts } from "@/collections/Posts";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -25,10 +26,20 @@ export default buildConfig({
           path: "@/components/payload/elements/log-out-button#LogOutButton",
         },
       },
+      afterNavLinks: [
+        "@/components/payload/elements/after-nav-links/clerk-users-link#ClerkUsersLink",
+      ],
+      views: {
+        clerkUsersView: {
+          Component:
+            "@/components/payload/views/clerk-users/clerk-users#ClerkUsers",
+          path: "/clerk-users",
+        },
+      },
       providers: ["@/providers/auth-provider#AuthProvider"],
     },
   },
-  collections: [Users, Media],
+  collections: [Users, Media, Posts],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

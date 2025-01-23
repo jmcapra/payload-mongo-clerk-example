@@ -21,7 +21,8 @@
     "next": "15.1.4",
     "payload": "^3.17.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "zod": "3.24.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
