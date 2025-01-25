@@ -45,3 +45,6 @@ next-env.d.ts
 
 # Payload
 *.db
+
+# App
+docker/data/*

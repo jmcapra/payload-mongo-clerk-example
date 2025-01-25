@@ -30,7 +30,7 @@ export const Users: CollectionConfig = {
       label: "Clerk userId",
       required: true,
       index: true,
-      unique: true,
+      // unique: true,
     },
   ],
 };

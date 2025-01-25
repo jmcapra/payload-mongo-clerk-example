@@ -11,7 +11,10 @@ export const ClerkUsersLink: React.FC = () => {
     return null;
   }
 
-  if (!(user?.publicMetadata.roles as Array<string>).includes("super-admin")) {
+  if (
+    !user?.publicMetadata?.roles ||
+    !(user?.publicMetadata.roles as Array<string>).includes("super-admin")
+  ) {
     return null;
   }
 
