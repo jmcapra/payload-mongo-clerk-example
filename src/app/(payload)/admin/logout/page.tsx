@@ -10,10 +10,9 @@ export default function Page() {
   const { signOut } = useClerk();
 
   useEffect(() => {
-    (async () => {
-      await signOut({ redirectUrl: "/" });
+    signOut({ redirectUrl: "/" }).finally(() => {
       window.location.href = "/";
-    })();
+    });
   });
 
   return (

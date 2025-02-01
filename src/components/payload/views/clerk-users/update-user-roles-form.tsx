@@ -35,12 +35,12 @@ export const UpdateUserRolesForm: React.FC<UpdateUserRolesFormProps> = ({
           <div key={role}>
             <input
               type="checkbox"
-              id={`${role}-role`}
+              id={`${userId}-${role}-role`}
               name="roles"
               value={role}
               defaultChecked={roles.includes(role)}
             />
-            <label htmlFor={`${role}-role`}>{role}</label>
+            <label htmlFor={`${userId}-${role}-role`}>{role}</label>
           </div>
         ))}
         <div id="roles-error" aria-live="polite" aria-atomic="true">

@@ -1,21 +1,23 @@
 "use client";
 
 import { useClerk } from "@clerk/nextjs";
-import Link from "next/link";
 import { LogOutIcon } from "@payloadcms/ui";
 import React from "react";
 
 export const LogOutButton: React.FC = () => {
   const { signOut } = useClerk();
 
-  const handleOnClick = async () => {
-    await signOut({ redirectUrl: "/" });
+  const handleOnClick = (event: React.MouseEvent) => {
+    event.preventDefault();
+    signOut({ redirectUrl: "/" }).finally(() => {
+      window.location.href = "/";
+    });
   };
 
   return (
-    <Link href="/" onClick={handleOnClick}>
+    <a href="#" onClick={handleOnClick}>
       <LogOutIcon />
-    </Link>
+    </a>
   );
 };
 

@@ -10,7 +10,7 @@ This is an example for Payload CMS and Clerk integration.
 
 1. Copy the `env.example` file into `.env.local` or `.env`
 
-2. Set the Clerk values in `.env.local` or `.env` and uncomment `DATABASE_URI` for `SQLite` or `PostgreSQL` 
+2. Set the Clerk values in `.env.local` or `.env` and uncomment `DATABASE_URI` for `SQLite` or `PostgreSQL`
 
 3. If you selected the `PostgreSQL` you can use Docker:
 
@@ -21,16 +21,19 @@ docker compose up
 and edit the `src/payload.config.ts` file:
 
 Uncomment:
+
 ```typescript
 import { postgresAdapter } from "@payloadcms/db-postgres";
 ```
 
 Comment / delete:
+
 ```typescript
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
 ```
 
 Uncomment:
+
 ```typescript
   // PostgreSQL
   db: postgresAdapter({
@@ -41,6 +44,7 @@ Uncomment:
 ```
 
 Comment / delete:
+
 ```typescript
   // SQLite
   db: sqliteAdapter({
