@@ -14,6 +14,12 @@ Source code in the `part-1` branch: https://github.com/DanailMinchev/payload-cle
 
 ## Getting Started
 
+Install dependencies:
+
+```shell
+npm ci
+```
+
 1. Create a new Clerk application and configure:
 
 Enable `Email` as `Sign in option`.
@@ -21,9 +27,11 @@ Enable `Email` as `Sign in option`.
 The setup is described in details in the videos above, but here are the settings for reference:
 
 - [Test mode](https://clerk.com/docs/testing/test-emails-and-phones#setup-test-mode)
+
   ![Test mode](./docs/assets/test-mode.png)
 
 - [publicMetadata](https://clerk.com/docs/references/nextjs/basic-rbac)
+
   ![publicMetadata](./docs/assets/public-metadata.png)
 
 2. Copy the `env.example` file into `.env.local` file.
@@ -57,7 +65,7 @@ This is the database connection string. Uncomment `DATABASE_URI` for `SQLite` or
 
 5. If you selected the `PostgreSQL` you can use Docker:
 
-```bash
+```shell
 docker compose up
 ```
 
@@ -141,9 +149,9 @@ Otherwise, leave the `E2E_CLERK_*_USER_PHONE` environment variables empty.
 
 You can register the `E2E` users from the above point manually or automatically using the `GET /api/app/seed` endpoint.
 
-**Registering automatically**
-
 Run the application: `npm run dev`
+
+**Registering automatically**
 
 Invoke / navigate to [http://localhost:3000/api/app/seed](http://localhost:3000/api/app/seed) endpoint.
 
@@ -171,9 +179,9 @@ and you should set the rest of the user roles via the [admin dashboard](http://l
 - user-1+clerk_test@example.com (no role, no changes to user's metadata, used for simulating a website user / registered
   user)
 
-8. Run the development server:
+8. Run the development server (if not running already):
 
-```bash
+```shell
 npm run dev
 ```
 
