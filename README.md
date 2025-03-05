@@ -230,3 +230,38 @@ Replace `{NGROK_AUTHTOKEN}` with [your authtoken](https://dashboard.ngrok.com/ge
 
 Replace `{NGROK_DOMAIN}` with [your free static domain](https://dashboard.ngrok.com/domains),
 for example: `your-static-domain-here.ngrok-free.app`.
+
+## E2E Testing
+
+There are E2E tests implemented using [Playwright](https://playwright.dev/).
+
+They are devided into two categories
+
+- api-tests
+  Used to verify the access control.
+- app-tests
+  Used to verify the app pages, including those behind authentication.
+
+Before running the tests, you should install dependencies by executing:
+
+```shell
+npx playwright install
+npx playwright install-deps
+```
+
+Then you can use following scripts:
+
+- For UI mode:
+  ```shell
+  npm run playwright:test:ui
+  ```
+- For command line mode with debugging:
+
+  ```shell
+  npm run playwright:test:debug
+  ```
+
+- For command line mode (used for CI):
+  ```shell
+  npm run playwright:test
+  ```
