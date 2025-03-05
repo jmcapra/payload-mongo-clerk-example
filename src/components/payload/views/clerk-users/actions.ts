@@ -7,10 +7,7 @@ import { checkRoles } from "@/lib/server/auth-utils";
 import { SUPER_ADMIN_ROLES } from "@/constants/auth";
 
 const updateRolesSchema = z.object({
-  roles: z
-    .string()
-    .array()
-    .min(1, { message: "You must choose at least one role" }),
+  roles: z.string().array(),
 });
 
 export interface UpdateUserRolesState {

@@ -21,13 +21,6 @@ export async function updateClerkUserRoles(
     };
   }
 
-  if (roles.length === 0) {
-    return {
-      isError: true,
-      message: "You must choose at least one role",
-    };
-  }
-
   const client = await clerkClient();
 
   try {
