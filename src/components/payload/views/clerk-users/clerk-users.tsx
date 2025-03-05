@@ -20,7 +20,7 @@ export const ClerkUsers: React.FC<AdminViewProps> = async ({
 
   const client = await clerkClient();
 
-  const users = searchParams.search
+  const users = searchParams?.search
     ? (await client.users.getUserList({ query: searchParams.search as string }))
         .data
     : [];
@@ -39,7 +39,7 @@ export const ClerkUsers: React.FC<AdminViewProps> = async ({
       <Gutter>
         <h1>Clerk users</h1>
 
-        <SearchUsers defaultSearchValue={searchParams.search as string} />
+        <SearchUsers defaultSearchValue={searchParams?.search as string} />
 
         {users.map((user) => {
           return (
