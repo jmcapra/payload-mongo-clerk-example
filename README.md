@@ -2,15 +2,30 @@
 
 This is an example for Payload CMS and Clerk integration.
 
-YouTube videos:
+## Contents
 
-**PART 1**
+- [YouTube videos](#youtube-videos)
+- [Getting Started](#getting-started)
+- [Webhooks](#webhooks)
+- [E2E Testing](#e2e-testing)
+
+## YouTube videos
+
+**Part 2 - Advanced integration**
+
+[![Payload CMS and Clerk - advanced integration](https://img.youtube.com/vi/egKaeOuddFA/0.jpg)](https://www.youtube.com/watch?v=egKaeOuddFA)
+
+[https://www.youtube.com/watch?v=egKaeOuddFA](https://www.youtube.com/watch?v=egKaeOuddFA)
+
+Source code for the video is in the `part-2` branch: https://github.com/DanailMinchev/payload-clerk-example/tree/feat/part-2
+
+**Part 1 - Basic integration**
 
 [![Payload and Clerk example](https://img.youtube.com/vi/7PNGNqqFlu0/0.jpg)](https://www.youtube.com/watch?v=7PNGNqqFlu0)
 
 [https://www.youtube.com/watch?v=7PNGNqqFlu0](https://www.youtube.com/watch?v=7PNGNqqFlu0)
 
-Source code in the `part-1` branch: https://github.com/DanailMinchev/payload-clerk-example/tree/feat/part-1
+Source code for the video is in the `part-1` branch: https://github.com/DanailMinchev/payload-clerk-example/tree/feat/part-1
 
 ## Getting Started
 
