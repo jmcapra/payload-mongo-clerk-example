@@ -49,6 +49,12 @@ The setup is described in details in the videos above, but here are the settings
 
   ![publicMetadata](./docs/assets/public-metadata.png)
 
+```json
+{
+  "metadata": "{{user.public_metadata}}"
+}
+```
+
 2. Copy the `env.example` file into `.env.local` file.
 
 3. Set Clerk environment variables [documentation](https://clerk.com/docs/deployments/clerk-environment-variables):
