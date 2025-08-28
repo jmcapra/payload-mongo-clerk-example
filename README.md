@@ -1,67 +1,168 @@
-# Payload Blank Template
+# Payload CMS + Clerk + MongoDB Starter
 
-This template comes configured with the bare minimum to get started on anything you need.
+Building on the foundation of [DanailMinchev's payload-clerk-example](https://github.com/DanailMinchev/payload-clerk-example), this starter modernises the stack with MongoDB and provides a complete authentication solution. 
 
-## Quick start
+A minor contribution by Jaiden Capra as part of the [TYMO Forge](https://www.tymo.ai) open source app starter initiative.
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+## ✨ Features
 
-## Quick Start - local setup
+- **Payload CMS v3.53** - Modern headless CMS with TypeScript
+- **Clerk Authentication** - Complete user management with roles & permissions  
+- **Role-Based Access** - Super admin, admin, editor, and user roles
+- **Webhook Integration** - Real-time user sync between Clerk and Payload
 
-To spin up this template locally, follow these steps:
+## 🚀 Quick Start
 
-### Clone
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account (free tier available) - can also use local containerised mongo in your dev environment (run `docker-compose up`)
+- Clerk account (free tier available)
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+### Installation
+
+```bash
+git clone https://github.com/your-org/payload-mongo-clerk-example.git
+cd payload-mongo-clerk-example
+pnpm install
+```
+
+### Configuration
+
+1. **Copy environment variables:**
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. **Set up Clerk:**
+   - Create a new [Clerk application](https://clerk.com)
+   - Enable Email as Sign-in option
+   - Enable Test mode for development
+   - Configure public metadata with `{"metadata": "{{user.public_metadata}}"}`
+   - Add your keys to `.env.local`:
+     ```
+     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+     CLERK_SECRET_KEY=sk_test_...
+     SIGNING_SECRET=whsec_...
+     ```
+
+3. **Set up MongoDB:**
+   - Create a [MongoDB Atlas](https://www.mongodb.com/atlas) cluster
+   - Get your connection string and add to `.env.local`:
+     ```
+     MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+     ```
+
+4. **Configure Payload:**
+   ```
+   PAYLOAD_SECRET=your-32-character-secret-key
+   ```
+
+### Youtube tutorials from Danail
+For more details, check out the full videos from Danail:
+
+**Part 2 - Advanced integration**
+
+[![Payload CMS and Clerk - advanced integration](https://img.youtube.com/vi/egKaeOuddFA/0.jpg)](https://www.youtube.com/watch?v=egKaeOuddFA)
+
+[https://www.youtube.com/watch?v=egKaeOuddFA](https://www.youtube.com/watch?v=egKaeOuddFA)
+
+Source code for the video is in the `part-2` branch of the original repo: https://github.com/DanailMinchev/payload-clerk-example/tree/feat/part-2
+
+**Part 1 - Basic integration**
+
+[![Payload and Clerk example](https://img.youtube.com/vi/7PNGNqqFlu0/0.jpg)](https://www.youtube.com/watch?v=7PNGNqqFlu0)
+
+[https://www.youtube.com/watch?v=7PNGNqqFlu0](https://www.youtube.com/watch?v=7PNGNqqFlu0)
+
+Source code for the video is in the `part-1` branch of the original repo: https://github.com/DanailMinchev/payload-clerk-example/tree/feat/part-1
 
 ### Development
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+```bash
+pnpm dev
+```
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+Open [http://localhost:3000](http://localhost:3000) and follow the setup wizard to create your first admin user.
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+### Seed Test Users (Optional)
 
-#### Docker (Optional)
+For testing with predefined roles, visit [/api/app/seed](http://localhost:3000/api/app/seed) to create:
+- `super-admin-1+clerk_test@example.com` (Super Admin)
+- `admin-1+clerk_test@example.com` (Admin)  
+- `editor-1+clerk_test@example.com` (Editor)
+- `user-1+clerk_test@example.com` (User)
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+⚠️ **Warning:** This endpoint will delete existing data.
 
-To do so, follow these steps:
+## 🐳 Docker Development (Optional)
 
-- Modify the `MONGODB_URI` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URI` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+For local MongoDB without Atlas:
 
-## How it works
+```bash
+# Update MONGODB_URI in .env.local to mongodb://127.0.0.1/your-db-name
+docker-compose up -d
+pnpm dev
+```
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+## 🔗 Webhooks
 
-### Collections
+The app includes Clerk webhook integration at `POST /api/clerk/webhooks` for real-time user synchronisation.
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+**Supported Events:**
+- `user.created` - Creates corresponding Payload user
+- `user.updated` - Updates user data and roles  
+- `user.deleted` - Removes user from Payload
 
-- #### Users (Authentication)
+**Ngrok Testing:**
+```bash
+ngrok http 3000 --url=your-domain.ngrok-free.app
+```
 
-  Users are auth-enabled collections that have access to the admin panel.
+Add the ngrok URL to your [Clerk webhook endpoints](https://dashboard.clerk.com/last-active?path=webhooks).
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+In production, ngrok is not needed. Use your live domain.
 
-- #### Media
+## 🧪 Testing
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+Full E2E test suite with Playwright:
 
-### Docker
+```bash
+# Install Playwright
+npx playwright install
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+# Run tests
+pnpm run playwright:test:ui      # Interactive mode
+pnpm run playwright:test:debug   # Debug mode  
+pnpm run playwright:test         # CI mode
+```
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+Tests cover authentication flows, role-based access control, and admin panel functionality.
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+## 📚 Collections
 
-## Questions
+### Users (Authentication)
+Auth-enabled collection with Clerk integration and role-based permissions.
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+### Media  
+Upload-enabled collection with automatic resising, focal points, and multiple size variants.
+
+## 🤝 Contributing
+
+This project builds on the [Payload-Clerk example](https://github.com/DanailMinchev/payload-clerk-example) from [Danail Minchev](https://github.com/DanailMinchev) and the Payload CMS community. Contributions welcome!
+
+## 📖 Learn More 
+
+- [Payload CMS Documentation](https://payloadcms.com/docs)
+- [Clerk Documentation](https://clerk.com/docs)  
+- [MongoDB Atlas Documentation](https://docs.atlas.mongodb.com/)
+- [TYMO Forge](https://www.tymo.ai) - More open source tools coming soon
+
+## 💬 Support
+
+- [Payload Discord](https://discord.com/invite/payload)
+- [GitHub Discussions](https://github.com/payloadcms/payload/discussions)
+- [Clerk Support](https://clerk.com/support)
+
+---
+
+*Need help with Payload CMS implementation or custom solutions? [TYMO AI](https://www.tymo.ai/contact) offers expert consulting services for startups and established firms.*

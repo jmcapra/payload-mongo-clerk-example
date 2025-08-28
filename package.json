@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A blank template to get started with Payload 3.0",
   "license": "MIT",
+  "author": "Jaiden Capra <jaiden@tymo.ai>, Danail Minchev <danail.minchev@gmail.com>",
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
@@ -13,9 +14,12 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" pnpm exec playwright test",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
+    "test": "vitest",
+    "playwright:test": "playwright test",
+    "playwright:test:debug": "playwright test --debug",
+    "playwright:test:ui": "playwright test --ui"
   },
   "dependencies": {
     "@clerk/localizations": "3.13.5",
@@ -28,6 +32,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",
     "graphql": "^16.8.1",
+    "nanoid": "^5.1.5",
     "next": "15.4.4",
     "payload": "3.53.0",
     "react": "19.1.0",
