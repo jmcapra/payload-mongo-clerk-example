@@ -1,15 +1,64 @@
-## Payload and Clerk example
+# Payload CMS + Clerk + MongoDB Starter
 
-This is an example for Payload CMS and Clerk integration.
+Building on the foundation of [DanailMinchev's payload-clerk-example](https://github.com/DanailMinchev/payload-clerk-example), this starter modernises the stack with MongoDB and provides a complete authentication solution. 
 
-## Contents
+A minor contribution by Jaiden Capra as part of the [TYMO Forge](https://www.tymo.ai) open source app starter initiative.
 
-- [YouTube videos](#youtube-videos)
-- [Getting Started](#getting-started)
-- [Webhooks](#webhooks)
-- [E2E Testing](#e2e-testing)
+## ✨ Features
 
-## YouTube videos
+- **Payload CMS v3.53** - Modern headless CMS with TypeScript
+- **Clerk Authentication** - Complete user management with roles & permissions  
+- **Role-Based Access** - Super admin, admin, editor, and user roles
+- **Webhook Integration** - Real-time user sync between Clerk and Payload
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account (free tier available) - can also use local containerised mongo in your dev environment (run `docker-compose up`)
+- Clerk account (free tier available)
+
+### Installation
+
+```bash
+git clone https://github.com/your-org/payload-mongo-clerk-example.git
+cd payload-mongo-clerk-example
+pnpm install
+```
+
+### Configuration
+
+1. **Copy environment variables:**
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. **Set up Clerk:**
+   - Create a new [Clerk application](https://clerk.com)
+   - Enable Email as Sign-in option
+   - Enable Test mode for development
+   - Configure public metadata with `{"metadata": "{{user.public_metadata}}"}`
+   - Add your keys to `.env.local`:
+     ```
+     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+     CLERK_SECRET_KEY=sk_test_...
+     SIGNING_SECRET=whsec_...
+     ```
+
+3. **Set up MongoDB:**
+   - Create a [MongoDB Atlas](https://www.mongodb.com/atlas) cluster
+   - Get your connection string and add to `.env.local`:
+     ```
+     MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+     ```
+
+4. **Configure Payload:**
+   ```
+   PAYLOAD_SECRET=your-32-character-secret-key
+   ```
+
+### Youtube tutorials from Danail
+For more details, check out the full videos from Danail:
 
 **Part 2 - Advanced integration**
 
@@ -17,7 +66,7 @@ This is an example for Payload CMS and Clerk integration.
 
 [https://www.youtube.com/watch?v=egKaeOuddFA](https://www.youtube.com/watch?v=egKaeOuddFA)
 
-Source code for the video is in the `part-2` branch: https://github.com/DanailMinchev/payload-clerk-example/tree/feat/part-2
+Source code for the video is in the `part-2` branch of the original repo: https://github.com/DanailMinchev/payload-clerk-example/tree/feat/part-2
 
 **Part 1 - Basic integration**
 
@@ -25,264 +74,95 @@ Source code for the video is in the `part-2` branch: https://github.com/DanailMi
 
 [https://www.youtube.com/watch?v=7PNGNqqFlu0](https://www.youtube.com/watch?v=7PNGNqqFlu0)
 
-Source code for the video is in the `part-1` branch: https://github.com/DanailMinchev/payload-clerk-example/tree/feat/part-1
+Source code for the video is in the `part-1` branch of the original repo: https://github.com/DanailMinchev/payload-clerk-example/tree/feat/part-1
 
-## Getting Started
+### Development
 
-Install dependencies:
-
-```shell
-npm ci
+```bash
+pnpm dev
 ```
 
-1. Create a new Clerk application and configure:
+Open [http://localhost:3000](http://localhost:3000) and follow the setup wizard to create your first admin user.
 
-Enable `Email` as `Sign in option`.
+### Seed Test Users (Optional)
 
-The setup is described in details in the videos above, but here are the settings for reference:
+For testing with predefined roles, visit [/api/app/seed](http://localhost:3000/api/app/seed) to create:
+- `super-admin-1+clerk_test@example.com` (Super Admin)
+- `admin-1+clerk_test@example.com` (Admin)  
+- `editor-1+clerk_test@example.com` (Editor)
+- `user-1+clerk_test@example.com` (User)
 
-- [Test mode](https://clerk.com/docs/testing/test-emails-and-phones#setup-test-mode)
+⚠️ **Warning:** This endpoint will delete existing data.
 
-  ![Test mode](./docs/assets/test-mode.png)
+## 🐳 Docker Development (Optional)
 
-- [publicMetadata](https://clerk.com/docs/references/nextjs/basic-rbac)
+For local MongoDB without Atlas:
 
-  ![publicMetadata](./docs/assets/public-metadata.png)
-
-```json
-{
-  "metadata": "{{user.public_metadata}}"
-}
+```bash
+# Update MONGODB_URI in .env.local to mongodb://127.0.0.1/your-db-name
+docker-compose up -d
+pnpm dev
 ```
 
-2. Copy the `env.example` file into `.env.local` file.
+## 🔗 Webhooks
 
-3. Set Clerk environment variables [documentation](https://clerk.com/docs/deployments/clerk-environment-variables):
+The app includes Clerk webhook integration at `POST /api/clerk/webhooks` for real-time user synchronisation.
 
-`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+**Supported Events:**
+- `user.created` - Creates corresponding Payload user
+- `user.updated` - Updates user data and roles  
+- `user.deleted` - Removes user from Payload
 
-Your Clerk app's Publishable Key, which you can find in the Clerk Dashboard. It will be prefixed with pk*test* in
-development instances and pk*live* in production instances.
-
-`CLERK_SECRET_KEY`
-
-Your Clerk app's Secret Key, which you can find in the Clerk Dashboard. It will be prefixed with sk*test* in development
-instances and sk*live* in production instances. Do not expose this on the frontend with a public environment variable.
-
-`SIGNING_SECRET`
-
-In case you are going to use [Webhooks](https://clerk.com/docs/webhooks/sync-data), you will need to set Signing Secret.
-
-4. Set Payload environment variables [documentation](https://payloadcms.com/docs/getting-started/installation)
-
-`PAYLOAD_SECRET`
-
-This environmental variable acts as your secret key. It's paramount that you ensure its value is both secure and strong,
-as it's integral to the encryption and decryption process.
-
-`DATABASE_URI`
-
-This is the database connection string. Uncomment `DATABASE_URI` for `SQLite` or `PostgreSQL`.
-
-5. If you selected the `PostgreSQL` you can use Docker:
-
-```shell
-docker compose up
+**Ngrok Testing:**
+```bash
+ngrok http 3000 --url=your-domain.ngrok-free.app
 ```
 
-and edit the `src/payload.config.ts` file:
+Add the ngrok URL to your [Clerk webhook endpoints](https://dashboard.clerk.com/last-active?path=webhooks).
 
-Uncomment:
+In production, ngrok is not needed. Use your live domain.
 
-```typescript
-import { postgresAdapter } from "@payloadcms/db-postgres";
-```
+## 🧪 Testing
 
-Comment / delete:
+Full E2E test suite with Playwright:
 
-```typescript
-import { sqliteAdapter } from "@payloadcms/db-sqlite";
-```
-
-Uncomment:
-
-```typescript
-  // PostgreSQL
-db: postgresAdapter({
-  pool: {
-    connectionString: process.env.DATABASE_URI || "",
-  },
-}),
-```
-
-Comment / delete:
-
-```typescript
-  // SQLite
-db: sqliteAdapter({
-  client: {
-    url: process.env.DATABASE_URI || "",
-  },
-}),
-```
-
-6. For testing and local development purposes following users are being used:
-
-- all-roles-1+clerk_test@example.com
-- super-admin-1+clerk_test@example.com
-- admin-1+clerk_test@example.com
-- editor-1+clerk_test@example.com
-- user-1+clerk_test@example.com
-
-Please set the environment variables accordingly with their passwords in your `.env.local` file:
-
-```dotenv
-E2E_CLERK_ALL_ROLES_USER_EMAIL=all-roles-1+clerk_test@example.com
-E2E_CLERK_ALL_ROLES_USER_PASSWORD=
-E2E_CLERK_ALL_ROLES_USER_PHONE=+19735550101
-
-E2E_CLERK_SUPER_ADMIN_USER_EMAIL=super-admin-1+clerk_test@example.com
-E2E_CLERK_SUPER_ADMIN_USER_PASSWORD=
-E2E_CLERK_SUPER_ADMIN_USER_PHONE=+19735550102
-
-E2E_CLERK_ADMIN_USER_EMAIL=admin-1+clerk_test@example.com
-E2E_CLERK_ADMIN_USER_PASSWORD=
-E2E_CLERK_ADMIN_USER_PHONE=+19735550103
-
-E2E_CLERK_EDITOR_USER_EMAIL=editor-1+clerk_test@example.com
-E2E_CLERK_EDITOR_USER_PASSWORD=
-E2E_CLERK_EDITOR_USER_PHONE=+19735550104
-
-E2E_CLERK_AUTHENTICATED_USER_EMAIL=user-1+clerk_test@example.com
-E2E_CLERK_AUTHENTICATED_USER_PASSWORD=
-E2E_CLERK_AUTHENTICATED_USER_PHONE=+19735550105
-```
-
-The above users are using test emails and test phone numbers as described in [Test emails and phones](https://clerk.com/docs/testing/test-emails-and-phones).
-
-If you want to use phone numbers, you need to enable "Phone number" in the Clerk's dashboard, otherwise seed endpoint will not work.
-
-![Phone number](./docs/assets/phone-number.png)
-
-Otherwise, leave the `E2E_CLERK_*_USER_PHONE` environment variables empty.
-
-7. Register the `E2E` users.
-
-You can register the `E2E` users from the above point manually or automatically using the `GET /api/app/seed` endpoint.
-
-Run the application: `npm run dev`
-
-**Registering automatically**
-
-Invoke / navigate to [http://localhost:3000/api/app/seed](http://localhost:3000/api/app/seed) endpoint.
-
-Observe the console for logs.
-
-**WARNING: the endpoint will delete your existing data**
-
-**Registering manually**
-
-You should register your `super-admin-1+clerk_test@example.com` user in Clerk manually and set the `super-admin` role.
-
-The `super-admin-1+clerk_test@example.com` user should have following [public metadata](https://clerk.com/docs/users/metadata#public-metadata):
-
-```json
-{
-  "roles": ["super-admin"]
-}
-```
-
-and you should set the rest of the user roles via the [admin dashboard](http://localhost:3000/admin/clerk-users) as follows:
-
-- all-roles-1+clerk_test@example.com (super-admin role, admin role, editor role)
-- admin-1+clerk_test@example.com (admin role)
-- editor-1+clerk_test@example.com (editor role)
-- user-1+clerk_test@example.com (no role, no changes to user's metadata, used for simulating a website user / registered
-  user)
-
-8. Run the development server (if not running already):
-
-```shell
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Webhooks
-
-Please refer to the official documentation - [Sync Clerk data to your app with webhooks](https://clerk.com/docs/webhooks/sync-data).
-
-The app exposes `POST /api/clerk/webhooks` endpoint which can be configured in
-the [Clerk Dashboard](https://dashboard.clerk.com/last-active?path=webhooks).
-
-Environment variables:
-
-- `SIGNING_SECRET` : "Signing Secret" from the [Clerk Dashboard](https://dashboard.clerk.com/last-active?path=webhooks).
-
-Currently, the webhooks endpoint is listening on the following events:
-
-- `user.created`
-- `user.updated`
-- `user.deleted`
-
-### Testing webhooks with ngrok
-
-Please follow the official documentation - [Setup & Installation](https://dashboard.ngrok.com/get-started/setup)
-
-To run ngrok in Docker (macOS):
-
-```shell
-docker run -it -e NGROK_AUTHTOKEN={NGROK_AUTHTOKEN} ngrok/ngrok:latest http host.docker.internal:3000 --url={NGROK_DOMAIN}
-```
-
-To run ngrok in Docker (other OS):
-
-```shell
-docker run -it -e NGROK_AUTHTOKEN={NGROK_AUTHTOKEN} ngrok/ngrok:latest http 3000 --url={NGROK_DOMAIN}
-```
-
-To run ngrok using native binary:
-
-```shell
-ngrok http 3000 --url={NGROK_DOMAIN}
-```
-
-Replace `{NGROK_AUTHTOKEN}` with [your authtoken](https://dashboard.ngrok.com/get-started/your-authtoken).
-
-Replace `{NGROK_DOMAIN}` with [your free static domain](https://dashboard.ngrok.com/domains),
-for example: `your-static-domain-here.ngrok-free.app`.
-
-## E2E Testing
-
-There are E2E tests implemented using [Playwright](https://playwright.dev/).
-
-They are devided into two categories
-
-- api-tests
-  Used to verify the access control.
-- app-tests
-  Used to verify the app pages, including those behind authentication.
-
-Before running the tests, you should install dependencies by executing:
-
-```shell
+```bash
+# Install Playwright
 npx playwright install
-npx playwright install-deps
+
+# Run tests
+pnpm run playwright:test:ui      # Interactive mode
+pnpm run playwright:test:debug   # Debug mode  
+pnpm run playwright:test         # CI mode
 ```
 
-Then you can use following scripts:
+Tests cover authentication flows, role-based access control, and admin panel functionality.
 
-- For UI mode:
-  ```shell
-  npm run playwright:test:ui
-  ```
-- For command line mode with debugging:
+## 📚 Collections
 
-  ```shell
-  npm run playwright:test:debug
-  ```
+### Users (Authentication)
+Auth-enabled collection with Clerk integration and role-based permissions.
 
-- For command line mode (used for CI):
-  ```shell
-  npm run playwright:test
-  ```
+### Media  
+Upload-enabled collection with automatic resising, focal points, and multiple size variants.
+
+## 🤝 Contributing
+
+This project builds on the [Payload-Clerk example](https://github.com/DanailMinchev/payload-clerk-example) from [Danail Minchev](https://github.com/DanailMinchev) and the Payload CMS community. Contributions welcome!
+
+## 📖 Learn More 
+
+- [Payload CMS Documentation](https://payloadcms.com/docs)
+- [Clerk Documentation](https://clerk.com/docs)  
+- [MongoDB Atlas Documentation](https://docs.atlas.mongodb.com/)
+- [TYMO Forge](https://www.tymo.ai) - More open source tools coming soon
+
+## 💬 Support
+
+- [Payload Discord](https://discord.com/invite/payload)
+- [GitHub Discussions](https://github.com/payloadcms/payload/discussions)
+- [Clerk Support](https://clerk.com/support)
+
+---
+
+*Need help with Payload CMS implementation or custom solutions? [TYMO AI](https://www.tymo.ai/contact) offers expert consulting services for startups and established firms.*

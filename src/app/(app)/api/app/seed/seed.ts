@@ -1,8 +1,9 @@
 import { CollectionSlug, Payload, PayloadRequest } from "payload";
 import { clerkClient } from "@clerk/nextjs/server";
 import { ADMIN_ROLE, EDITOR_ROLE, SUPER_ADMIN_ROLE } from "@/constants/auth";
-import { ClerkClient } from "@clerk/backend";
 import { Role } from "@/types/globals";
+
+type ClerkClient = Awaited<ReturnType<typeof clerkClient>>;
 
 const collections: CollectionSlug[] = ["media", "posts"];
 
@@ -187,13 +188,15 @@ async function createUser({
   const emailAddresses = [
     ...new Set(
       user.emailAddresses.map(
-        (userEmailAddress) => userEmailAddress.emailAddress,
+        (userEmailAddress: { emailAddress: string }) => userEmailAddress.emailAddress,
       ),
     ),
   ];
   const phoneNumbers = [
     ...new Set(
-      user.phoneNumbers.map((userPhoneNumber) => userPhoneNumber.phoneNumber),
+      user.phoneNumbers.map(
+        (userPhoneNumber: { phoneNumber: string }) => userPhoneNumber.phoneNumber,
+      ),
     ),
   ];
   await payload.create({
@@ -204,8 +207,8 @@ async function createUser({
       isDeleted: false,
       firstName: user.firstName,
       lastName: user.lastName,
-      emailAddresses,
-      phoneNumbers,
+      emailAddresses: emailAddresses as string[],
+      phoneNumbers: phoneNumbers as string[],
     },
   });
 }
