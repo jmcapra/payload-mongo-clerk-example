@@ -1,20 +1,12 @@
-import configPromise from "@payload-config";
-import { getPayload } from "payload";
-import { checkRoles } from "@/lib/server/auth-utils";
-import { SUPER_ADMIN_ROLES } from "@/constants/auth";
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
 
-export const GET = async () => {
-  if (!(await checkRoles(SUPER_ADMIN_ROLES))) {
-    return Response.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
+export const GET = async (request: Request) => {
   const payload = await getPayload({
     config: configPromise,
-  });
+  })
 
-  const data = await payload.find({
-    collection: "users",
-  });
-
-  return Response.json(data);
-};
+  return Response.json({
+    message: 'This is an example of a custom route.',
+  })
+}

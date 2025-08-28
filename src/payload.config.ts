@@ -1,9 +1,7 @@
-import { sqliteAdapter } from "@payloadcms/db-sqlite";
-// import { postgresAdapter } from "@payloadcms/db-postgres";
-import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
+import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "path";
-import { buildConfig } from "payload";
+import { buildConfig, SharpDependency } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
 
@@ -49,10 +47,8 @@ export default buildConfig({
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
   // SQLite
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URI || "",
-    },
+  db: mongooseAdapter({
+    url: process.env.DATABASE_URI || '',
   }),
   // PostgreSQL
   // db: postgresAdapter({
@@ -60,9 +56,8 @@ export default buildConfig({
   //     connectionString: process.env.DATABASE_URI || "",
   //   },
   // }),
-  sharp,
+  sharp: sharp as SharpDependency,
   plugins: [
-    payloadCloudPlugin(),
     // storage-adapter-placeholder
   ],
 });

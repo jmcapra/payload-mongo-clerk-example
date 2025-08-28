@@ -1,9 +1,11 @@
 import { Role } from "@/types/globals";
-import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { checkRoles as checkRolesUtil } from "@/lib/auth-utils";
 
 export const checkRoles = async (rolesToCheck: Role[] = []) => {
-  const { sessionClaims } = await auth();
+  const user = await currentUser();
 
-  return checkRolesUtil(rolesToCheck, sessionClaims?.metadata?.roles);
+  console.log("roles", user?.publicMetadata?.roles);
+
+  return checkRolesUtil(rolesToCheck, user?.publicMetadata?.roles as Role[]);
 };

@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isAdminEnabledRoles } from "./lib/access/is-admin-enabled-roles";
 import { isAdminEnabledRolesOrPublishedStatus } from "./lib/access/is-admin-enabled-roles-or-published-status";
 import { isAdminRolesOrSelf } from "./lib/access/is-admin-roles-or-self";
+import { setCreatedByOnCreate } from "@/hooks/beforeChange/setCreatedByOnCreate";
 
 export const Posts: CollectionConfig = {
   slug: "posts",
@@ -37,15 +38,6 @@ export const Posts: CollectionConfig = {
     },
   ],
   hooks: {
-    beforeChange: [
-      async ({ data, operation, req }) => {
-        if (operation === "create") {
-          if (req.user) {
-            data.createdBy = req.user.id;
-            return data;
-          }
-        }
-      },
-    ],
+    beforeChange: [setCreatedByOnCreate],
   },
 };
